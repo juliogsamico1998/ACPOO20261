@@ -13,6 +13,9 @@ public class Endereco implements Serializable {
     private String estado;
     private String cidade;
 
+    public Endereco() {
+    }
+
     public Endereco(String logradouro, String cep, String numero, String complemento,
                     String pais, String estado, String cidade) {
         this.logradouro = logradouro;
@@ -24,24 +27,59 @@ public class Endereco implements Serializable {
         this.cidade = cidade;
     }
 
-    public String getLogradouro() { return logradouro; }
-    public void setLogradouro(String logradouro) { this.logradouro = logradouro; }
+    public String getLogradouro() {
+        return logradouro;
+    }
 
-    public String getCep() { return cep; }
-    public void setCep(String cep) { this.cep = cep; }
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
+    }
 
-    public String getNumero() { return numero; }
-    public void setNumero(String numero) { this.numero = numero; }
+    public String getCep() {
+        return cep;
+    }
 
-    public String getComplemento() { return complemento; }
-    public void setComplemento(String complemento) { this.complemento = complemento; }
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
 
-    public String getPais() { return pais; }
-    public void setPais(String pais) { this.pais = pais; }
+    public String getNumero() {
+        return numero;
+    }
 
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
+    public void setNumero(String numero) {
+        this.numero = numero;
+    }
 
-    public String getCidade() { return cidade; }
-    public void setCidade(String cidade) { this.cidade = cidade; }
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
+    }
+
+    public String getPais() {
+        return pais;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
 }

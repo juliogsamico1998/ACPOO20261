@@ -11,6 +11,9 @@ public class Contatos implements Serializable {
     private String numeroWhatsApp;
     private String nomeParaContato;
 
+    public Contatos() {
+    }
+
     public Contatos(String email, String telefoneFixo, String telefoneCelular,
                     String numeroWhatsApp, String nomeParaContato) {
         this.email = email;
@@ -20,18 +23,43 @@ public class Contatos implements Serializable {
         this.nomeParaContato = nomeParaContato;
     }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public String getEmail() {
+        return email;
+    }
 
-    public String getTelefoneFixo() { return telefoneFixo; }
-    public void setTelefoneFixo(String telefoneFixo) { this.telefoneFixo = telefoneFixo; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-    public String getTelefoneCelular() { return telefoneCelular; }
-    public void setTelefoneCelular(String telefoneCelular) { this.telefoneCelular = telefoneCelular; }
+    public String getTelefoneFixo() {
+        return telefoneFixo;
+    }
 
-    public String getNumeroWhatsApp() { return numeroWhatsApp; }
-    public void setNumeroWhatsApp(String numeroWhatsApp) { this.numeroWhatsApp = numeroWhatsApp; }
+    public void setTelefoneFixo(String telefoneFixo) {
+        this.telefoneFixo = telefoneFixo;
+    }
 
-    public String getNomeParaContato() { return nomeParaContato; }
-    public void setNomeParaContato(String nomeParaContato) { this.nomeParaContato = nomeParaContato; }
+    public String getTelefoneCelular() {
+        return telefoneCelular;
+    }
+
+    public void setTelefoneCelular(String telefoneCelular) {
+        this.telefoneCelular = telefoneCelular;
+    }
+
+    public String getNumeroWhatsApp() {
+        return numeroWhatsApp;
+    }
+
+    public void setNumeroWhatsApp(String numeroWhatsApp) {
+        this.numeroWhatsApp = numeroWhatsApp;
+    }
+
+    public String getNomeParaContato() {
+        return nomeParaContato;
+    }
+
+    public void setNomeParaContato(String nomeParaContato) {
+        this.nomeParaContato = nomeParaContato;
+    }
 }

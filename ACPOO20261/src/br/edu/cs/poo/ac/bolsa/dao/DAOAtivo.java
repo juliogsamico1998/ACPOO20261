@@ -2,8 +2,8 @@ package br.edu.cs.poo.ac.bolsa.dao;
 
 import br.edu.cs.poo.ac.bolsa.entidade.Ativo;
 
-public class AtivoDAO extends DAOGenerico {
-    public AtivoDAO() {
+public class DAOAtivo extends DAOGenerico {
+    public DAOAtivo() {
         inicializarCadastro(Ativo.class);
     }
 

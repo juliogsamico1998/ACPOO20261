@@ -4,9 +4,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class InvestidorPessoa extends Investidor {
+    private static final long serialVersionUID = 1L;
+
     private String cpf;
     private double renda;
     private FaixaRenda faixaRenda;
+
+    public InvestidorPessoa() {
+    }
 
     public InvestidorPessoa(String nome, Endereco endereco, LocalDate dataNascimento,
                             BigDecimal bonus, Contatos contatos, String cpf,
