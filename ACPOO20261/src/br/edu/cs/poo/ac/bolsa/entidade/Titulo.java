@@ -1,12 +1,15 @@
-package br.edu.cs.poo.ac.bolsa.entidades;
+package br.edu.cs.poo.ac.bolsa.entidade;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
-public class Titulo {
+public class Titulo implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private InvestidorPessoa investidorPessoa;
     private InvestidorEmpresa investidorEmpresa;
     private Ativo ativo;
@@ -121,25 +124,21 @@ public class Titulo {
             return false;
         }
 
-        if (hoje.isEqual(dataVencimento) || hoje.isAfter(dataVencimento)) {
+        if (!hoje.isBefore(dataVencimento)) {
             return false;
         }
 
-        if (hoje.isEqual(dataAplicacao) || hoje.isBefore(dataAplicacao)) {
+        if (!hoje.isAfter(dataAplicacao)) {
             return false;
         }
 
-        if (dataUltimoRendimento != null &&
-            (hoje.isEqual(dataUltimoRendimento) || hoje.isBefore(dataUltimoRendimento))) {
+        if (dataUltimoRendimento != null && !hoje.isAfter(dataUltimoRendimento)) {
             return false;
         }
 
-        long dias;
-        if (dataUltimoRendimento == null) {
-            dias = ChronoUnit.DAYS.between(dataAplicacao, hoje);
-        } else {
-            dias = ChronoUnit.DAYS.between(dataUltimoRendimento, hoje);
-        }
+        long dias = (dataUltimoRendimento == null)
+                ? ChronoUnit.DAYS.between(dataAplicacao, hoje)
+                : ChronoUnit.DAYS.between(dataUltimoRendimento, hoje);
 
         if (dias <= 0) {
             return false;
@@ -156,15 +155,14 @@ public class Titulo {
     }
 
     public String getNumero() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        String dataFormatada = dataAplicacao.format(formatter) + "0000";
+        String data = dataAplicacao.format(DateTimeFormatter.ofPattern("yyyyMMdd")) + "0000";
 
         if (investidorPessoa != null) {
-            return "000" + investidorPessoa.getCpf() + ativo.getCodigo() + dataFormatada;
+            return "000" + investidorPessoa.getCpf() + ativo.getCodigo() + data;
         }
 
         if (investidorEmpresa != null) {
-            return investidorEmpresa.getCnpj() + ativo.getCodigo() + dataFormatada;
+            return investidorEmpresa.getCnpj() + ativo.getCodigo() + data;
         }
 
         return null;
