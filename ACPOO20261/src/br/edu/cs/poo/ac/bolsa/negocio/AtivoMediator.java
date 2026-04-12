@@ -5,8 +5,8 @@ import br.edu.cs.poo.ac.bolsa.entidade.Ativo;
 import br.edu.cs.poo.ac.bolsa.util.MensagensValidacao;
 
 public class AtivoMediator {
-
     private static AtivoMediator instancia = new AtivoMediator();
+    private DAOAtivo dao = new DAOAtivo();
 
     private AtivoMediator() {
     }
@@ -23,48 +23,41 @@ public class AtivoMediator {
         MensagensValidacao msgs = new MensagensValidacao();
 
         if (ativo == null) {
-            msgs.adicionar("Ativo \u00e9 obrigat\u00f3rio.");
+            msgs.adicionar("Ativo é obrigatório.");
             return msgs;
         }
 
         if (ativo.getCodigo() <= 0) {
-            msgs.adicionar("C\u00f3digo deve ser maior que zero.");
+            msgs.adicionar("Código deve ser maior que zero.");
         }
-
         if (ehBranco(ativo.getDescricao())) {
-            msgs.adicionar("Descri\u00e7\u00e3o \u00e9 obrigat\u00f3ria.");
+            msgs.adicionar("Descrição é obrigatória.");
         }
-
         if (ativo.getValorMinimoAplicacao() <= 0) {
-            msgs.adicionar("Valor m\u00ednimo de aplica\u00e7\u00e3o deve ser maior que zero.");
+            msgs.adicionar("Valor mínimo de aplicação deve ser maior que zero.");
         }
-
         if (ativo.getValorMaximoAplicacao() <= 0) {
-            msgs.adicionar("Valor m\u00e1ximo de aplica\u00e7\u00e3o deve ser maior que zero.");
+            msgs.adicionar("Valor máximo de aplicação deve ser maior que zero.");
         }
-
         if (ativo.getValorMinimoAplicacao() > 0
                 && ativo.getValorMaximoAplicacao() > 0
                 && ativo.getValorMinimoAplicacao() > ativo.getValorMaximoAplicacao()) {
-            msgs.adicionar("Valor m\u00ednimo de aplica\u00e7\u00e3o deve ser menor ou igual a valor m\u00e1ximo de aplica\u00e7\u00e3o.");
+            msgs.adicionar("Valor mínimo de aplicação deve ser menor ou igual a valor máximo de aplicação.");
         }
-
         if (ativo.getTaxaMensalMinima() < 0) {
-            msgs.adicionar("Taxa mensal m\u00ednima deve ser maior ou igual a zero.");
+            msgs.adicionar("Taxa mensal mínima deve ser maior ou igual a zero.");
         }
-
         if (ativo.getTaxaMensalMaxima() < 0) {
-            msgs.adicionar("Taxa mensal m\u00e1xima deve ser maior ou igual a zero.");
+            msgs.adicionar("Taxa mensal máxima deve ser maior ou igual a zero.");
         }
-
-        if (ativo.getTaxaMensalMinima() > ativo.getTaxaMensalMaxima()) {
-            msgs.adicionar("Taxa mensal m\u00ednima deve ser menor ou igual a taxa mensal m\u00e1xima.");
+        if (ativo.getTaxaMensalMinima() >= 0
+                && ativo.getTaxaMensalMaxima() >= 0
+                && ativo.getTaxaMensalMinima() > ativo.getTaxaMensalMaxima()) {
+            msgs.adicionar("Taxa mensal mínima deve ser menor ou igual a taxa mensal máxima.");
         }
-
         if (ativo.getFaixaMinimaPermitida() == null) {
-            msgs.adicionar("Faixa m\u00ednima permitida \u00e9 obrigat\u00f3ria.");
+            msgs.adicionar("Faixa mínima permitida é obrigatória.");
         }
-
         if (ativo.getPrazoEmMeses() <= 0) {
             msgs.adicionar("Prazo em meses deve ser maior que zero.");
         }
@@ -76,9 +69,8 @@ public class AtivoMediator {
         MensagensValidacao msgs = validar(ativo);
 
         if (msgs.estaVazio()) {
-            DAOAtivo dao = new DAOAtivo();
             if (!dao.incluir(ativo)) {
-                msgs.adicionar("Ativo j\u00e1 existente.");
+                msgs.adicionar("Ativo já existente.");
             }
         }
 
@@ -89,9 +81,8 @@ public class AtivoMediator {
         MensagensValidacao msgs = validar(ativo);
 
         if (msgs.estaVazio()) {
-            DAOAtivo dao = new DAOAtivo();
             if (!dao.alterar(ativo)) {
-                msgs.adicionar("Ativo n\u00e3o existente.");
+                msgs.adicionar("Ativo não existente.");
             }
         }
 
@@ -102,13 +93,13 @@ public class AtivoMediator {
         MensagensValidacao msgs = new MensagensValidacao();
 
         if (codigo <= 0) {
-            msgs.adicionar("C\u00f3digo deve ser maior que zero.");
-            return msgs;
+            msgs.adicionar("Código deve ser maior que zero.");
         }
 
-        DAOAtivo dao = new DAOAtivo();
-        if (!dao.excluir(codigo)) {
-            msgs.adicionar("Ativo n\u00e3o existente.");
+        if (msgs.estaVazio()) {
+            if (!dao.excluir(codigo)) {
+                msgs.adicionar("Ativo não existente.");
+            }
         }
 
         return msgs;
@@ -118,8 +109,6 @@ public class AtivoMediator {
         if (codigo <= 0) {
             return null;
         }
-
-        DAOAtivo dao = new DAOAtivo();
         return dao.buscar(codigo);
     }
 }

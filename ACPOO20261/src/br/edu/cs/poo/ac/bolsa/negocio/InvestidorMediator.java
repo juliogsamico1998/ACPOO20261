@@ -14,6 +14,8 @@ import br.edu.cs.poo.ac.bolsa.util.ResultadoValidacao;
 import br.edu.cs.poo.ac.bolsa.util.ValidadorCpfCnpj;
 
 public class InvestidorMediator {
+    private DAOInvestidorEmpresa daoInvEmp = new DAOInvestidorEmpresa();
+    private DAOInvestidorPessoa daoInvPes = new DAOInvestidorPessoa();
 
     private boolean ehBranco(String s) {
         return s == null || s.trim().isEmpty();
@@ -31,104 +33,99 @@ public class InvestidorMediator {
         MensagensValidacao msgs = new MensagensValidacao();
 
         if (endereco == null) {
-            msgs.adicionar("Endere\u00e7o \u00e9 obrigat\u00f3rio.");
+            msgs.adicionar("Endereço é obrigatório.");
             return msgs;
         }
 
         if (ehBranco(endereco.getLogradouro())) {
-            msgs.adicionar("Logradouro \u00e9 obrigat\u00f3rio.");
+            msgs.adicionar("Logradouro é obrigatório.");
         }
         if (ehBranco(endereco.getNumero())) {
-            msgs.adicionar("N\u00famero \u00e9 obrigat\u00f3rio.");
+            msgs.adicionar("Número é obrigatório.");
         }
         if (ehBranco(endereco.getPais())) {
-            msgs.adicionar("Pa\u00eds \u00e9 obrigat\u00f3rio.");
+            msgs.adicionar("País é obrigatório.");
         }
         if (ehBranco(endereco.getEstado())) {
-            msgs.adicionar("Estado \u00e9 obrigat\u00f3rio.");
+            msgs.adicionar("Estado é obrigatório.");
         }
         if (ehBranco(endereco.getCidade())) {
-            msgs.adicionar("Cidade \u00e9 obrigat\u00f3rio.");
+            msgs.adicionar("Cidade é obrigatório.");
         }
 
         return msgs;
     }
 
-    private MensagensValidacao validarContatos(Contatos contatos, boolean ehPJ) {
+    private MensagensValidacao validarContatos(Contatos contatos, boolean ehPessoaJuridica) {
         MensagensValidacao msgs = new MensagensValidacao();
 
         if (contatos == null) {
-            msgs.adicionar("Contatos \u00e9 obrigat\u00f3rio.");
+            msgs.adicionar("Contatos é obrigatório.");
             return msgs;
         }
 
         if (!emailValido(contatos.getEmail())) {
-            msgs.adicionar("E-mail inv\u00e1lido.");
+            msgs.adicionar("E-mail inválido.");
         }
 
         boolean temFixo = !ehBranco(contatos.getTelefoneFixo());
-        boolean temCel = !ehBranco(contatos.getTelefoneCelular());
-        boolean temWhats = !ehBranco(contatos.getNumeroWhatsApp());
+        boolean temCelular = !ehBranco(contatos.getTelefoneCelular());
+        boolean temWhatsapp = !ehBranco(contatos.getNumeroWhatsApp());
 
-        if (!temFixo && !temCel && !temWhats) {
+        if (!temFixo && !temCelular && !temWhatsapp) {
             msgs.adicionar("Pelo menos um telefone deve ser informado.");
         }
 
         if (temFixo && !soNumeros(contatos.getTelefoneFixo())) {
-            msgs.adicionar("Telefone fixo deve conter apenas n\u00fameros.");
+            msgs.adicionar("Telefone fixo deve conter apenas números.");
         }
-        if (temCel && !soNumeros(contatos.getTelefoneCelular())) {
-            msgs.adicionar("Telefone celular deve conter apenas n\u00fameros.");
+        if (temCelular && !soNumeros(contatos.getTelefoneCelular())) {
+            msgs.adicionar("Telefone celular deve conter apenas números.");
         }
-        if (temWhats && !soNumeros(contatos.getNumeroWhatsApp())) {
-            msgs.adicionar("WhatsApp deve conter apenas n\u00fameros.");
+        if (temWhatsapp && !soNumeros(contatos.getNumeroWhatsApp())) {
+            msgs.adicionar("WhatsApp deve conter apenas números.");
         }
 
-        if (ehPJ && ehBranco(contatos.getNomeParaContato())) {
-            msgs.adicionar("Nome para contato \u00e9 obrigat\u00f3rio para pessoa jur\u00eddica.");
+        if (ehPessoaJuridica && ehBranco(contatos.getNomeParaContato())) {
+            msgs.adicionar("Nome para contato é obrigatório para pessoa jurídica.");
         }
 
         return msgs;
     }
 
-    private MensagensValidacao validar(DadosInvestidor d) {
+    private MensagensValidacao validar(DadosInvestidor dadosInv) {
         MensagensValidacao msgs = new MensagensValidacao();
 
-        if (d == null) {
-            msgs.adicionar("Investidor \u00e9 obrigat\u00f3rio.");
+        if (dadosInv == null) {
+            msgs.adicionar("Investidor é obrigatório.");
             return msgs;
         }
 
-        if (d.getEndereco() != null) {
-            msgs.adicionar(validarEndereco(d.getEndereco()));
+        if (ehBranco(dadosInv.getNome())) {
+            msgs.adicionar("Nome é obrigatório.");
+        }
+        if (dadosInv.getEndereco() == null) {
+            msgs.adicionar("Endereço é obrigatório.");
+        }
+        if (dadosInv.getDataCriacao() == null) {
+            msgs.adicionar("Data de criação é obrigatória.");
+        } else if (dadosInv.getDataCriacao().isAfter(LocalDate.now())) {
+            msgs.adicionar("Data de criação deve ser menor ou igual à data atual.");
+        }
+        if (dadosInv.getBonus() == null) {
+            msgs.adicionar("Bônus é obrigatório.");
+        } else if (dadosInv.getBonus().doubleValue() < 0) {
+            msgs.adicionar("Bônus deve ser maior ou igual a zero.");
+        }
+        if (dadosInv.getContatos() == null) {
+            msgs.adicionar("Contatos é obrigatório.");
         }
 
-        if (d.getContatos() != null) {
-            msgs.adicionar(validarContatos(d.getContatos(), d.ehInvestidorEmpresa()));
+        if (dadosInv.getEndereco() != null) {
+            msgs.adicionar(validarEndereco(dadosInv.getEndereco()));
         }
-
-        if (ehBranco(d.getNome())) {
-            msgs.adicionar("Nome \u00e9 obrigat\u00f3rio.");
-        }
-
-        if (d.getEndereco() == null) {
-            msgs.adicionar("Endere\u00e7o \u00e9 obrigat\u00f3rio.");
-        }
-
-        if (d.getDataCriacao() == null) {
-            msgs.adicionar("Data de cria\u00e7\u00e3o \u00e9 obrigat\u00f3ria.");
-        } else if (d.getDataCriacao().isAfter(LocalDate.now())) {
-            msgs.adicionar("Data de cria\u00e7\u00e3o deve ser menor ou igual \u00e0 data atual.");
-        }
-
-        if (d.getBonus() == null) {
-            msgs.adicionar("B\u00f4nus \u00e9 obrigat\u00f3rio.");
-        } else if (d.getBonus().doubleValue() < 0) {
-            msgs.adicionar("B\u00f4nus deve ser maior ou igual a zero.");
-        }
-
-        if (d.getContatos() == null) {
-            msgs.adicionar("Contatos \u00e9 obrigat\u00f3rio.");
+        if (dadosInv.getContatos() != null) {
+            msgs.adicionar(validarContatos(dadosInv.getContatos(), dadosInv.ehInvestidorEmpresa()));
         }
 
         return msgs;
@@ -138,15 +135,16 @@ public class InvestidorMediator {
         MensagensValidacao msgs = new MensagensValidacao();
 
         if (ie == null) {
-            msgs.adicionar("Investidor Empresa \u00e9 obrigat\u00f3rio.");
+            msgs.adicionar("Investidor Empresa é obrigatório.");
             return msgs;
         }
 
-        msgs.adicionar(validar(new DadosInvestidor(ie, null)));
+        DadosInvestidor dados = new DadosInvestidor(ie, null);
+        msgs.adicionar(validar(dados));
 
-        ResultadoValidacao r = ValidadorCpfCnpj.validarCnpj(ie.getCnpj());
-        if (r != null) {
-            msgs.adicionar(r.getMensagem());
+        ResultadoValidacao resultadoCnpj = ValidadorCpfCnpj.validarCnpj(ie.getCnpj());
+        if (resultadoCnpj != null) {
+            msgs.adicionar(resultadoCnpj.getMensagem());
         }
 
         if (ie.getFaturamento() < 100000.0) {
@@ -156,97 +154,50 @@ public class InvestidorMediator {
         return msgs;
     }
 
-    private FaixaRenda calcularFaixa(double renda) {
+    private FaixaRenda calcularFaixaRenda(double renda) {
         if (renda >= FaixaRenda.PREMIUM.getValorInicial()) {
             return FaixaRenda.PREMIUM;
-        }
-        if (renda >= FaixaRenda.DIFERENCIADA.getValorInicial()) {
+        } else if (renda >= FaixaRenda.DIFERENCIADA.getValorInicial()) {
             return FaixaRenda.DIFERENCIADA;
+        } else {
+            return FaixaRenda.REGULAR;
         }
-        return FaixaRenda.REGULAR;
     }
 
     private MensagensValidacao validarInvestidorPessoa(InvestidorPessoa ip) {
         MensagensValidacao msgs = new MensagensValidacao();
 
         if (ip == null) {
-            msgs.adicionar("Investidor Pessoa \u00e9 obrigat\u00f3rio.");
+            msgs.adicionar("Investidor Pessoa é obrigatório.");
             return msgs;
         }
 
-        msgs.adicionar(validar(new DadosInvestidor(null, ip)));
+        DadosInvestidor dados = new DadosInvestidor(null, ip);
+        msgs.adicionar(validar(dados));
 
-        ResultadoValidacao r = ValidadorCpfCnpj.validarCpf(ip.getCpf());
-        if (r != null) {
-            msgs.adicionar(r.getMensagem());
+        ResultadoValidacao resultadoCpf = ValidadorCpfCnpj.validarCpf(ip.getCpf());
+        if (resultadoCpf != null) {
+            msgs.adicionar(resultadoCpf.getMensagem());
         }
 
         if (ip.getRenda() < 10000.0) {
             msgs.adicionar("Renda deve ser maior ou igual a 10000.0.");
         } else {
-            ip.setFaixaRenda(calcularFaixa(ip.getRenda()));
+            ip.setFaixaRenda(calcularFaixaRenda(ip.getRenda()));
         }
 
         return msgs;
-    }
-
-    public MensagensValidacao incluirInvestidorPessoa(InvestidorPessoa ip) {
-        MensagensValidacao msgs = validarInvestidorPessoa(ip);
-
-        if (msgs.estaVazio()) {
-            DAOInvestidorPessoa dao = new DAOInvestidorPessoa();
-            if (!dao.incluirInvestidorPessoa(ip)) {
-                msgs.adicionar("Investidor Pessoa j\u00e1 existente.");
-            }
-        }
-        return msgs;
-    }
-
-    public MensagensValidacao alterarInvestidorPessoa(InvestidorPessoa ip) {
-        MensagensValidacao msgs = validarInvestidorPessoa(ip);
-
-        if (msgs.estaVazio()) {
-            DAOInvestidorPessoa dao = new DAOInvestidorPessoa();
-            if (!dao.alterarInvestidorPessoa(ip)) {
-                msgs.adicionar("Investidor Pessoa n\u00e3o existente.");
-            }
-        }
-        return msgs;
-    }
-
-    public MensagensValidacao excluirInvestidorPessoa(String cpf) {
-        MensagensValidacao msgs = new MensagensValidacao();
-
-        ResultadoValidacao r = ValidadorCpfCnpj.validarCpf(cpf);
-        if (r != null) {
-            msgs.adicionar(r.getMensagem());
-            return msgs;
-        }
-
-        DAOInvestidorPessoa dao = new DAOInvestidorPessoa();
-        if (!dao.excluirInvestidorPessoa(cpf)) {
-            msgs.adicionar("Investidor Pessoa n\u00e3o existente.");
-        }
-
-        return msgs;
-    }
-
-    public InvestidorPessoa buscarInvestidorPessoa(String cpf) {
-        if (ValidadorCpfCnpj.validarCpf(cpf) != null) {
-            return null;
-        }
-        return new DAOInvestidorPessoa().buscarInvestidorPessoa(cpf);
     }
 
     public MensagensValidacao incluirInvestidorEmpresa(InvestidorEmpresa ie) {
         MensagensValidacao msgs = validarInvestidorEmpresa(ie);
 
         if (msgs.estaVazio()) {
-            DAOInvestidorEmpresa dao = new DAOInvestidorEmpresa();
-            if (!dao.incluirInvestidorEmpresa(ie)) {
-                msgs.adicionar("Investidor Empresa j\u00e1 existente.");
+            if (!daoInvEmp.incluirInvestidorEmpresa(ie)) {
+                msgs.adicionar("Investidor Empresa já existente.");
             }
         }
+
         return msgs;
     }
 
@@ -254,26 +205,25 @@ public class InvestidorMediator {
         MensagensValidacao msgs = validarInvestidorEmpresa(ie);
 
         if (msgs.estaVazio()) {
-            DAOInvestidorEmpresa dao = new DAOInvestidorEmpresa();
-            if (!dao.alterarInvestidorEmpresa(ie)) {
-                msgs.adicionar("Investidor Empresa n\u00e3o existente.");
+            if (!daoInvEmp.alterarInvestidorEmpresa(ie)) {
+                msgs.adicionar("Investidor Empresa não existente.");
             }
         }
+
         return msgs;
     }
 
     public MensagensValidacao excluirInvestidorEmpresa(String cnpj) {
         MensagensValidacao msgs = new MensagensValidacao();
 
-        ResultadoValidacao r = ValidadorCpfCnpj.validarCnpj(cnpj);
-        if (r != null) {
-            msgs.adicionar(r.getMensagem());
+        ResultadoValidacao resultadoCnpj = ValidadorCpfCnpj.validarCnpj(cnpj);
+        if (resultadoCnpj != null) {
+            msgs.adicionar(resultadoCnpj.getMensagem());
             return msgs;
         }
 
-        DAOInvestidorEmpresa dao = new DAOInvestidorEmpresa();
-        if (!dao.excluirInvestidorEmpresa(cnpj)) {
-            msgs.adicionar("Investidor Empresa n\u00e3o existente.");
+        if (!daoInvEmp.excluirInvestidorEmpresa(cnpj)) {
+            msgs.adicionar("Investidor Empresa não existente.");
         }
 
         return msgs;
@@ -283,6 +233,53 @@ public class InvestidorMediator {
         if (ValidadorCpfCnpj.validarCnpj(cnpj) != null) {
             return null;
         }
-        return new DAOInvestidorEmpresa().buscarInvestidorEmpresa(cnpj);
+        return daoInvEmp.buscarInvestidorEmpresa(cnpj);
+    }
+
+    public MensagensValidacao incluirInvestidorPessoa(InvestidorPessoa ip) {
+        MensagensValidacao msgs = validarInvestidorPessoa(ip);
+
+        if (msgs.estaVazio()) {
+            if (!daoInvPes.incluirInvestidorPessoa(ip)) {
+                msgs.adicionar("Investidor Pessoa já existente.");
+            }
+        }
+
+        return msgs;
+    }
+
+    public MensagensValidacao alterarInvestidorPessoa(InvestidorPessoa ip) {
+        MensagensValidacao msgs = validarInvestidorPessoa(ip);
+
+        if (msgs.estaVazio()) {
+            if (!daoInvPes.alterarInvestidorPessoa(ip)) {
+                msgs.adicionar("Investidor Pessoa não existente.");
+            }
+        }
+
+        return msgs;
+    }
+
+    public MensagensValidacao excluirInvestidorPessoa(String cpf) {
+        MensagensValidacao msgs = new MensagensValidacao();
+
+        ResultadoValidacao resultadoCpf = ValidadorCpfCnpj.validarCpf(cpf);
+        if (resultadoCpf != null) {
+            msgs.adicionar(resultadoCpf.getMensagem());
+            return msgs;
+        }
+
+        if (!daoInvPes.excluirInvestidorPessoa(cpf)) {
+            msgs.adicionar("Investidor Pessoa não existente.");
+        }
+
+        return msgs;
+    }
+
+    public InvestidorPessoa buscarInvestidorPessoa(String cpf) {
+        if (ValidadorCpfCnpj.validarCpf(cpf) != null) {
+            return null;
+        }
+        return daoInvPes.buscarInvestidorPessoa(cpf);
     }
 }

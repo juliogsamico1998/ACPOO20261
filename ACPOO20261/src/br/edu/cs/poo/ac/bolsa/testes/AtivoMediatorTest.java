@@ -22,12 +22,12 @@ public class AtivoMediatorTest extends TesteGenerico {
     public void setup() {
         cadastro = new CadastroObjetos(Ativo.class);
         mediator = AtivoMediator.getInstancia();
-        // apaga o diretÛrio de ativos
+        // apaga o diret√≥rio de ativos
         limparDiretorio("Ativo");
     }
 
     // -----------------------------
-    // M…TODO AUXILIAR PARA CRIAR ATIVOS V¡LIDOS
+    // M√âTODO AUXILIAR PARA CRIAR ATIVOS V√ÅLIDOS
     // -----------------------------
     private Ativo criarAtivo(long codigo) {
         Ativo a = new Ativo();
@@ -43,7 +43,7 @@ public class AtivoMediatorTest extends TesteGenerico {
     }
 
     // -----------------------------
-    // TESTES DE INCLUS√O
+    // TESTES DE INCLUS√ÉO
     // -----------------------------
     @Test
     public void testIncluirComSucesso() {
@@ -63,21 +63,21 @@ public class AtivoMediatorTest extends TesteGenerico {
         MensagensValidacao msgs = mediator.incluir(ativo);
 
         assertFalse(msgs.estaVazio());
-        assertTrue(msgs.getMensagens()[0].equals("Ativo j· existente."));
+        assertTrue(msgs.getMensagens()[0].equals("Ativo j√° existente."));
     }
 
     @Test
     public void testIncluirComErroDeValidacao() {
-        Ativo ativo = criarAtivo(0); // cÛdigo inv·lido
+        Ativo ativo = criarAtivo(0); // c√≥digo inv√°lido
 
         MensagensValidacao msgs = mediator.incluir(ativo);
 
         assertFalse(msgs.estaVazio());
-        assertTrue(msgs.getMensagens()[0].equals("CÛdigo deve ser maior que zero."));
+        assertTrue(msgs.getMensagens()[0].equals("C√≥digo deve ser maior que zero."));
     }
 
     // -----------------------------
-    // TESTES DE ALTERA«√O
+    // TESTES DE ALTERA√á√ÉO
     // -----------------------------
     @Test
     public void testAlterarComSucesso() {
@@ -101,22 +101,22 @@ public class AtivoMediatorTest extends TesteGenerico {
         MensagensValidacao msgs = mediator.alterar(ativo);
 
         assertFalse(msgs.estaVazio());
-        assertTrue(msgs.getMensagens()[0].equals("Ativo n„o existente."));
+        assertTrue(msgs.getMensagens()[0].equals("Ativo n√£o existente."));
     }
 
     @Test
     public void testAlterarComErroDeValidacao() {
         Ativo ativo = criarAtivo(1);
-        ativo.setDescricao(""); // inv·lido
+        ativo.setDescricao(""); // inv√°lido
 
         MensagensValidacao msgs = mediator.alterar(ativo);
 
         assertFalse(msgs.estaVazio());
-        assertTrue(msgs.getMensagens()[0].equals(("DescriÁ„o È obrigatÛria.")));
+        assertTrue(msgs.getMensagens()[0].equals(("Descri√ß√£o √© obrigat√≥ria.")));
     }
 
     // -----------------------------
-    // TESTES DE EXCLUS√O
+    // TESTES DE EXCLUS√ÉO
     // -----------------------------
     @Test
     public void testExcluirComSucesso() {
@@ -134,7 +134,7 @@ public class AtivoMediatorTest extends TesteGenerico {
         MensagensValidacao msgs = mediator.excluir(0);
 
         assertFalse(msgs.estaVazio());
-        assertTrue(msgs.getMensagens()[0].equals(("CÛdigo deve ser maior que zero.")));
+        assertTrue(msgs.getMensagens()[0].equals(("C√≥digo deve ser maior que zero.")));
     }
 
     @Test
@@ -142,7 +142,7 @@ public class AtivoMediatorTest extends TesteGenerico {
         MensagensValidacao msgs = mediator.excluir(1);
 
         assertFalse(msgs.estaVazio());
-        assertTrue(msgs.getMensagens()[0].equals("Ativo n„o existente."));
+        assertTrue(msgs.getMensagens()[0].equals("Ativo n√£o existente."));
     }
 
     // -----------------------------
